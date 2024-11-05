@@ -16,4 +16,5 @@ export type MainStackParamList = {
     PaymentMethods: { vehicleId: string };
     LicenseHistory: undefined;
     Profile: undefined;
+    VehicleForm: undefined;
 };

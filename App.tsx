@@ -1,15 +1,12 @@
-import React from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider as PaperProvider } from 'react-native-paper';
-import AppNavigator from './src/navigation/AppNavigator';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import MainNavigator from "./src/navigation/MainNavigator";
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <PaperProvider>
-        <AppNavigator />
-      </PaperProvider>
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <MainNavigator />
+    </NavigationContainer>
   );
 };
 

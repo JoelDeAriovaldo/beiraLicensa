@@ -49,10 +49,11 @@ const VehicleList: React.FC = () => {
         data={vehicles}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
       />
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("VehicleForm")}
+        onPress={() => navigation.navigate("VehicleForm")} // Navega para VehicleForm
       >
         <Text style={styles.buttonText}>Adicionar Novo Veículo</Text>
       </TouchableOpacity>
@@ -70,6 +71,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
   itemContainer: {
     padding: 15,

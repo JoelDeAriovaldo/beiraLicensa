@@ -14,9 +14,9 @@ const Profile: React.FC = () => {
 
   // Mock data for demonstration purposes
   const userProfile = {
-    name: "João Silva",
-    email: "joao.silva@example.com",
-    phone: "(11) 98765-4321",
+    name: "Larcen Oliveira ",
+    email: "LarcenOliveira.com",
+    phone: "836197987",
   };
 
   return (

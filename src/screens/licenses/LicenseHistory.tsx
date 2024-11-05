@@ -18,7 +18,6 @@ type LicenseHistoryScreenNavigationProp = NativeStackNavigationProp<
 const LicenseHistory: React.FC = () => {
   const navigation = useNavigation<LicenseHistoryScreenNavigationProp>();
 
-  // Mock data for demonstration purposes
   const licenseHistory = [
     {
       id: "1",

@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  ScrollView,
-  TouchableOpacity,
   Text,
   StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  AsyncStorage,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Card from "../../components/common/Card";
-import { MainStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Car, CreditCard, History, User } from "lucide-react";
+import { MainStackParamList } from "../../navigation/types";
+import { Car, CreditCard, History, User } from "lucide-react-native";
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<
   MainStackParamList,
@@ -19,166 +19,155 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const [paymentHistory, setPaymentHistory] = useState([
+    { date: "2024-10-01", amount: "1000" },
+    { date: "2024-09-15", amount: "500" },
+    { date: "2024-08-30", amount: "750" },
+  ]);
+
+  useEffect(() => {
+    const fetchPaymentHistory = async () => {
+      const history = await AsyncStorage.getItem("paymentHistory");
+      if (history) {
+        setPaymentHistory(JSON.parse(history));
+      }
+    };
+    fetchPaymentHistory();
+  }, []);
 
   const quickActions = [
     {
       title: "Nova Licença",
-      icon: <Car className="w-6 h-6 text-blue-600" />,
-      screen: "VehicleList" as keyof MainStackParamList,
+      icon: <Car color="#007AFF" size={22} />,
+      screen: "VehicleForm" as keyof MainStackParamList,
       description: "Registre uma nova licença para seu veículo",
     },
     {
       title: "Métodos de Pagamento",
-      icon: <CreditCard className="w-6 h-6 text-green-600" />,
+      icon: <CreditCard color="#007AFF" size={22} />,
       screen: "PaymentMethods" as keyof MainStackParamList,
       description: "Gerencie suas formas de pagamento",
     },
     {
       title: "Histórico",
-      icon: <History className="w-6 h-6 text-purple-600" />,
+      icon: <History color="#007AFF" size={22} />,
       screen: "LicenseHistory" as keyof MainStackParamList,
       description: "Veja suas licenças anteriores",
     },
     {
       title: "Perfil",
-      icon: <User className="w-6 h-6 text-gray-600" />,
+      icon: <User color="#007AFF" size={22} />,
       screen: "Profile" as keyof MainStackParamList,
       description: "Atualize suas informações",
     },
   ];
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Card style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Bem-vindo ao Beira Licenses</Text>
-          </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.cardText}>
-              Gerencie suas licenças de veículos de forma rápida e segura
-            </Text>
-          </View>
-        </Card>
+  const renderQuickAction = ({ item }: { item: (typeof quickActions)[0] }) => (
+    <TouchableOpacity
+      style={styles.quickAction}
+      onPress={() => navigation.navigate(item.screen)}
+    >
+      <View style={styles.quickActionCard}>
+        <View style={styles.quickActionContent}>
+          {item.icon}
+          <Text style={styles.quickActionTitle}>{item.title}</Text>
+          <Text style={styles.quickActionDescription}>{item.description}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
 
-        <View style={styles.quickActionsContainer}>
-          <Text style={styles.sectionTitle}>Ações Rápidas</Text>
-          <View style={styles.quickActions}>
-            {quickActions.map((action, index) => (
-              <TouchableOpacity key={index} style={styles.quickAction}>
-                <Card style={styles.quickActionCard}>
-                  <View style={styles.quickActionContent}>
-                    {action.icon}
-                    <Text style={styles.quickActionTitle}>{action.title}</Text>
-                    <Text style={styles.quickActionDescription}>
-                      {action.description}
-                    </Text>
-                  </View>
-                </Card>
-              </TouchableOpacity>
-            ))}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Bem-vindo ao Beira Licenses</Text>
+      <FlatList
+        data={quickActions}
+        renderItem={renderQuickAction}
+        keyExtractor={(item) => item.title}
+        contentContainerStyle={styles.quickActionsContainer}
+      />
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Licenças Próximas do Vencimento</Text>
+        <View style={styles.cardContent}>
+          <View style={styles.warningBox}>
+            <Text style={styles.warningText}>
+              Nenhuma licença próxima do vencimento
+            </Text>
           </View>
         </View>
-
-        <Card style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>
-              Licenças Próximas do Vencimento
-            </Text>
-          </View>
-          <View style={styles.cardContent}>
-            <View style={styles.warningBox}>
-              <Text style={styles.warningText}>
-                Nenhuma licença próxima do vencimento
-              </Text>
-            </View>
-          </View>
-        </Card>
-
-        <Card style={styles.card}>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>
-              Métodos de Pagamento Disponíveis
-            </Text>
-          </View>
-          <View style={styles.cardContent}>
-            <View style={styles.paymentMethods}>
-              <View style={styles.paymentMethod}>
-                <Text style={styles.paymentMethodText}>M-Pesa</Text>
-              </View>
-              <View style={styles.paymentMethod}>
-                <Text style={styles.paymentMethodText}>E-Mola</Text>
-              </View>
-              <View style={styles.paymentMethod}>
-                <Text style={styles.paymentMethodText}>MKesh</Text>
-              </View>
-            </View>
-          </View>
-        </Card>
       </View>
-    </ScrollView>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Histórico de Pagamentos</Text>
+        <View style={styles.cardContent}>
+          {paymentHistory.length > 0 ? (
+            paymentHistory.map((payment, index) => (
+              <View key={index} style={styles.paymentHistoryItem}>
+                <Text style={styles.paymentHistoryText}>
+                  {payment.date} - {payment.amount} MZN
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.noPaymentHistoryText}>
+              Nenhum pagamento registrado
+            </Text>
+          )}
+        </View>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F6F8",
+    padding: 20,
+    backgroundColor: "#FFF",
   },
-  content: {
-    padding: 16,
-  },
-  card: {
-    marginBottom: 16,
-  },
-  cardHeader: {
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 18,
+  title: {
+    fontSize: 20,
     fontWeight: "bold",
-  },
-  cardContent: {
-    marginBottom: 8,
-  },
-  cardText: {
-    color: "#666",
+    marginBottom: 20,
   },
   quickActionsContainer: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  quickActions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    marginBottom: 20,
   },
   quickAction: {
-    width: "48%",
     marginBottom: 16,
   },
   quickActionCard: {
-    height: 120,
-    justifyContent: "center",
+    padding: 20,
+    borderRadius: 8,
+    backgroundColor: "#F5F5F5",
     alignItems: "center",
   },
   quickActionContent: {
     alignItems: "center",
   },
   quickActionTitle: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
     marginTop: 8,
   },
   quickActionDescription: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#666",
     textAlign: "center",
     marginTop: 4,
+  },
+  card: {
+    marginBottom: 20,
+    padding: 20,
+    borderRadius: 8,
+    backgroundColor: "#F5F5F5",
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  cardContent: {
+    marginBottom: 8,
   },
   warningBox: {
     backgroundColor: "#FFF3CD",
@@ -188,16 +177,17 @@ const styles = StyleSheet.create({
   warningText: {
     color: "#856404",
   },
-  paymentMethods: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  paymentHistoryItem: {
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEE",
   },
-  paymentMethod: {
-    alignItems: "center",
+  paymentHistoryText: {
+    color: "#666",
   },
-  paymentMethodText: {
-    fontSize: 14,
-    fontWeight: "bold",
+  noPaymentHistoryText: {
+    color: "#666",
+    textAlign: "center",
   },
 });
 
