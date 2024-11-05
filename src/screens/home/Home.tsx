@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Card from "../../components/common/Card"; // Ajuste a importação
+import Card from "../../components/common/Card";
 import { MainStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Car, CreditCard, History, User } from "lucide-react";

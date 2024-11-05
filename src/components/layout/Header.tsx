@@ -1,19 +1,27 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { ArrowLeft, User } from "lucide-react-native";
 
 const Header: React.FC = () => {
   const navigation = useNavigation();
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <MaterialCommunityIcons name="arrow-left" size={24} color="#FFF" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Beira Licenses</Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-        <MaterialCommunityIcons name="account" size={24} color="#FFF" />
+      <View style={styles.headerLeft}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <ArrowLeft color="#FFF" size={20} />
+        </TouchableOpacity>
+        <Text style={styles.title}>Beira Licenses</Text>
+      </View>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Profile")}
+        style={styles.profileButton}
+      >
+        <User color="#FFF" size={20} />
       </TouchableOpacity>
     </View>
   );
@@ -25,12 +33,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#007AFF",
-    padding: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  backButton: {
+    marginRight: 12,
   },
   title: {
     color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  profileButton: {
+    padding: 8,
   },
 });
 
